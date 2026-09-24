@@ -306,7 +306,7 @@
     </svg>
   </div>
 
-  <p class="note"><strong>Leave SDO (MISO) on the main row empty.</strong> On many of these 4" boards the screen's SDO pin doesn't let go of the line and garbles the touch and SD card readings. The screen doesn't need it. Only T_DO and SD_MISO go to D19. The SD card slot is built into the back of the same board, but it has its <strong>own row of 4 pins</strong> (SD_CS, SD_MOSI, SD_MISO, SD_SCK), usually at the opposite end from the main row. Those 4 pins need their own wires; the slot isn't connected to the main row inside the board.</p>
+  <p class="note"><strong>Leave SDO (MISO) on the main row empty.</strong> On many of these 4" boards the screen's SDO pin doesn't let go of the line and garbles the touch and SD card readings. The screen doesn't need it. Only T_DO and SD_MISO go to D19. The SD card slot is built into the back of the same board, but it has its <strong>own row of 4 pins</strong> (SD_CS, SD_MOSI, SD_MISO, SD_SCK), usually at the opposite end from the main row. Those 4 pins need their own wires; the slot isn't connected to the main row inside the board. That row has a 5th pin with no trace running to it: leave that one empty.</p>
 
   <div class="tables">
     <div class="card">
