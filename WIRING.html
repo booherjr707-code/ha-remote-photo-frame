@@ -1,0 +1,406 @@
+<meta charset="utf-8">
+<title>Photo Frame Remote Wiring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #f3f5f8;
+    --panel: #ffffff;
+    --ink: #1b2330;
+    --muted: #5b6676;
+    --line: #d5dbe4;
+    --board: #e8edf4;
+    --board-edge: #9aa6b6;
+    --accent: #1f7a8c;
+    --pin: #1b2330;
+    --w-3v3: #d62828;
+    --w-gnd: #3b4452;
+    --w-5v: #b5540a;
+    --w-tcs: #c026d3;
+    --w-tdo: #65a30d;
+    --w-sdcs: #0f766e;
+    --w-mosi: #2563eb;
+    --w-sck: #0891b2;
+    --w-dc: #16a34a;
+    --w-cs: #d4a000;
+    --w-led: #ea580c;
+    --w-rst: #7c4dde;
+    --warn-bg: #fff4d6;
+    --warn-ink: #6b4a00;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #11151c;
+      --panel: #1a2029;
+      --ink: #e6ebf2;
+      --muted: #9aa5b4;
+      --line: #2e3744;
+      --board: #232b36;
+      --board-edge: #5d6b7e;
+      --accent: #4cc3d9;
+      --pin: #e6ebf2;
+      --w-3v3: #ff5a5a;
+      --w-gnd: #aab4c2;
+      --w-5v: #e08a3c;
+      --w-tcs: #e879f9;
+      --w-tdo: #a3e635;
+      --w-sdcs: #2dd4bf;
+      --w-mosi: #60a5fa;
+      --w-sck: #22d3ee;
+      --w-dc: #34d399;
+      --w-cs: #f1c232;
+      --w-led: #fb923c;
+      --w-rst: #a78bfa;
+      --warn-bg: #3a2f10;
+      --warn-ink: #f6d98a;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #11151c;
+    --panel: #1a2029;
+    --ink: #e6ebf2;
+    --muted: #9aa5b4;
+    --line: #2e3744;
+    --board: #232b36;
+    --board-edge: #5d6b7e;
+    --accent: #4cc3d9;
+    --pin: #e6ebf2;
+    --w-3v3: #ff5a5a;
+    --w-gnd: #aab4c2;
+      --w-5v: #e08a3c;
+      --w-tcs: #e879f9;
+      --w-tdo: #a3e635;
+      --w-sdcs: #2dd4bf;
+    --w-mosi: #60a5fa;
+    --w-sck: #22d3ee;
+    --w-dc: #34d399;
+    --w-cs: #f1c232;
+    --w-led: #fb923c;
+    --w-rst: #a78bfa;
+    --warn-bg: #3a2f10;
+    --warn-ink: #f6d98a;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 28px 56px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 28px; }
+  h1, h2 {
+    font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.05; }
+  h1 .accent { color: var(--accent); }
+  h2 { font-size: 1.55rem; line-height: 1.15; }
+  p { margin: 0; max-width: 68ch; }
+  .muted { color: var(--muted); }
+  .mono, code { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.92em; }
+  header { display: grid; gap: 8px; }
+  .eyebrow {
+    font: 600 0.78rem/1 "IBM Plex Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .parts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.92rem;
+  }
+
+  .diagram {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+    overflow-x: auto;
+  }
+  .diagram svg { display: block; width: 100%; min-width: 680px; height: auto; }
+  svg text { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; fill: var(--ink); }
+  svg .title { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 700; font-size: 22px; }
+  svg .sub { font-size: 11px; fill: var(--muted); }
+  svg .pinlbl { font-size: 13px; font-weight: 600; }
+  svg .alias { font-size: 11px; fill: var(--muted); font-weight: 500; }
+  svg .box { fill: var(--board); stroke: var(--board-edge); stroke-width: 1.5; }
+  svg .wire { fill: none; stroke-width: 3.2; stroke-linecap: round; }
+  svg .pin { fill: var(--pin); }
+  svg .ant { fill: none; stroke: var(--board-edge); stroke-width: 5; stroke-linecap: round; }
+  svg .sma { fill: var(--board-edge); }
+  .note {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+    border-radius: 8px;
+    padding: 12px 16px;
+    max-width: none;
+  }
+
+  .tables { display: grid; gap: 20px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px 8px;
+    display: grid;
+    gap: 6px;
+  }
+  .card h2 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .card h2 small { font: 400 0.95rem "Source Sans 3", system-ui, sans-serif; color: var(--muted); }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th {
+    text-align: left;
+    font: 600 0.74rem/1 "IBM Plex Mono", ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.pin { font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 600; white-space: nowrap; }
+  td.chk { width: 34px; }
+  td.chk input { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+  tr.done td:not(.chk) { opacity: 0.45; text-decoration: line-through; text-decoration-thickness: 1px; }
+  .sw {
+    display: inline-block; width: 12px; height: 12px; border-radius: 3px;
+    margin-right: 8px; vertical-align: -1px;
+  }
+  .progress { font-size: 0.95rem; color: var(--muted); }
+  button.reset {
+    font: inherit; font-size: 0.9rem;
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 3px 10px; cursor: pointer; margin-left: 8px;
+  }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  ol, ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; max-width: 72ch; }
+  pre {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; overflow-x: auto; margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 0.88rem;
+  }
+  section { display: grid; gap: 12px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ESP32-WROOM-32 · Hosyond 4.0" ST7796S · XPT2046 touch · microSD</div>
+    <h1><span class="accent">Photo Frame</span> Remote Wiring</h1>
+    <p class="muted">The display, its touch chip and its SD card slot all share three lines: clock (SCK), data out (MOSI) and data in (MISO). So ESP32 pins D18, D23 and D19 each get several wires. Use a breadboard row for each of those three. Tick each wire off as you go. Your ticks are saved in this browser.</p>
+    <div class="parts">
+      <span class="chip">ESP32-WROOM-32 dev board</span>
+      <span class="chip">Hosyond 4.0" 480×320 SPI touch display</span>
+      <span class="chip">microSD card, 32 GB or smaller</span>
+      <span class="chip">Breadboard + 16 jumper wires</span>
+    </div>
+  </header>
+
+  <div class="diagram" role="img" aria-label="Wiring diagram: ESP32 on the left, display pins on the right, SD card pins below them. Touch and SD wires join the shared clock, MOSI and MISO lines.">
+    <svg viewBox="0 0 760 612" xmlns="http://www.w3.org/2000/svg">
+      <!-- ESP32 -->
+      <rect class="box" x="30" y="36" width="210" height="566" rx="8"/>
+      <text x="56" y="450" class="title">ESP32</text>
+      <text x="56" y="468" class="sub">WROOM-32 dev board</text>
+      <text x="56" y="484" class="sub">(find pins by label)</text>
+      <g class="pinlbl">
+        <text x="228" y="64" text-anchor="end">VIN 5V</text>
+        <text x="228" y="92" text-anchor="end">GND</text>
+        <text x="228" y="120" text-anchor="end">D5</text>
+        <text x="228" y="148" text-anchor="end">D17</text>
+        <text x="228" y="176" text-anchor="end">D16</text>
+        <text x="228" y="204" text-anchor="end">D23</text>
+        <text x="228" y="232" text-anchor="end">D18</text>
+        <text x="228" y="260" text-anchor="end">D32</text>
+        <text x="228" y="344" text-anchor="end">D21</text>
+        <text x="228" y="400" text-anchor="end">D19</text>
+        <text x="228" y="498" text-anchor="end">D22</text>
+      </g>
+
+      <!-- Display main header -->
+      <text x="625" y="26" class="title" text-anchor="middle">4.0" TFT <tspan class="sub">main pins</tspan></text>
+      <rect class="box" x="520" y="36" width="210" height="404" rx="8"/>
+      <g class="pinlbl">
+        <text x="532" y="64">VCC</text>
+        <text x="532" y="92">GND</text>
+        <text x="532" y="120">CS</text>
+        <text x="532" y="148">RESET</text>
+        <text x="532" y="176">DC/RS</text>
+        <text x="532" y="204">SDI <tspan class="alias">MOSI</tspan></text>
+        <text x="532" y="232">SCK</text>
+        <text x="532" y="260">LED</text>
+        <text x="532" y="288">SDO <tspan class="alias">empty</tspan></text>
+        <text x="532" y="316">T_CLK</text>
+        <text x="532" y="344">T_CS</text>
+        <text x="532" y="372">T_DIN</text>
+        <text x="532" y="400">T_DO</text>
+        <text x="532" y="428">T_IRQ <tspan class="alias">empty</tspan></text>
+      </g>
+
+      <!-- SD header -->
+      <rect class="box" x="520" y="470" width="210" height="132" rx="8"/>
+      <text x="720" y="596" class="sub" text-anchor="end">SD slot pins</text>
+      <g class="pinlbl">
+        <text x="532" y="498">SD_CS</text>
+        <text x="532" y="526">SD_MOSI</text>
+        <text x="532" y="554">SD_MISO</text>
+        <text x="532" y="582">SD_SCK</text>
+      </g>
+
+      <!-- straight wires -->
+      <path class="wire" d="M240 60 H520" stroke="var(--w-5v)"/>
+      <path class="wire" d="M240 88 H520" stroke="var(--w-gnd)"/>
+      <path class="wire" d="M240 116 H520" stroke="var(--w-cs)"/>
+      <path class="wire" d="M240 144 H520" stroke="var(--w-rst)"/>
+      <path class="wire" d="M240 172 H520" stroke="var(--w-dc)"/>
+      <path class="wire" d="M240 200 H520" stroke="var(--w-mosi)"/>
+      <path class="wire" d="M240 228 H520" stroke="var(--w-sck)"/>
+      <path class="wire" d="M240 256 H520" stroke="var(--w-led)"/>
+      <path class="wire" d="M240 340 H520" stroke="var(--w-tcs)"/>
+      <path class="wire" d="M240 396 H520" stroke="var(--w-tdo)"/>
+      <path class="wire" d="M240 494 H520" stroke="var(--w-sdcs)"/>
+      <!-- shared lines -->
+      <path class="wire" d="M520 312 H450 V228" stroke="var(--w-sck)"/>
+      <path class="wire" d="M520 578 H480 V228" stroke="var(--w-sck)"/>
+      <path class="wire" d="M520 368 H400 V200" stroke="var(--w-mosi)"/>
+      <path class="wire" d="M520 522 H360 V200" stroke="var(--w-mosi)"/>
+      <path class="wire" d="M520 550 H420 V396" stroke="var(--w-tdo)"/>
+
+      <g class="pin">
+        <circle cx="240" cy="60" r="4"/><circle cx="240" cy="88" r="4"/><circle cx="240" cy="116" r="4"/>
+        <circle cx="240" cy="144" r="4"/><circle cx="240" cy="172" r="4"/><circle cx="240" cy="200" r="4"/>
+        <circle cx="240" cy="228" r="4"/><circle cx="240" cy="256" r="4"/><circle cx="240" cy="340" r="4"/>
+        <circle cx="240" cy="396" r="4"/><circle cx="240" cy="494" r="4"/>
+        <circle cx="520" cy="60" r="4"/><circle cx="520" cy="88" r="4"/><circle cx="520" cy="116" r="4"/>
+        <circle cx="520" cy="144" r="4"/><circle cx="520" cy="172" r="4"/><circle cx="520" cy="200" r="4"/>
+        <circle cx="520" cy="228" r="4"/><circle cx="520" cy="256" r="4"/><circle cx="520" cy="312" r="4"/>
+        <circle cx="520" cy="340" r="4"/><circle cx="520" cy="368" r="4"/><circle cx="520" cy="396" r="4"/>
+        <circle cx="520" cy="494" r="4"/><circle cx="520" cy="522" r="4"/><circle cx="520" cy="550" r="4"/>
+        <circle cx="520" cy="578" r="4"/>
+        <!-- joints -->
+        <circle cx="450" cy="228" r="5.5" style="fill:var(--w-sck)"/>
+        <circle cx="480" cy="228" r="5.5" style="fill:var(--w-sck)"/>
+        <circle cx="400" cy="200" r="5.5" style="fill:var(--w-mosi)"/>
+        <circle cx="360" cy="200" r="5.5" style="fill:var(--w-mosi)"/>
+        <circle cx="420" cy="396" r="5.5" style="fill:var(--w-tdo)"/>
+      </g>
+      <line class="nc" x1="520" y1="284" x2="505" y2="284"/>
+      <line class="nc" x1="520" y1="424" x2="505" y2="424"/>
+    </svg>
+  </div>
+
+  <p class="note"><strong>Leave SDO (MISO) on the main row empty.</strong> On many of these 4" boards the screen's SDO pin doesn't let go of the line and garbles the touch and SD card readings. The screen doesn't need it. Only T_DO and SD_MISO go to D19. The SD slot's 4 pins are on the <strong>other end</strong> of the board from the main row.</p>
+
+  <div class="tables">
+    <div class="card">
+      <h2>Display <small>main row of pins</small></h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th></th><th>Display pin</th><th>Goes to</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="chk"><input type="checkbox" id="d1" aria-label="VCC wired"></td><td class="pin"><span class="sw" style="background:var(--w-5v)"></span>VCC</td><td class="pin">VIN (5V)</td><td>The board has its own 3.3&nbsp;V regulator.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d2" aria-label="GND wired"></td><td class="pin"><span class="sw" style="background:var(--w-gnd)"></span>GND</td><td class="pin">GND</td><td>Any GND pin.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d3" aria-label="CS wired"></td><td class="pin"><span class="sw" style="background:var(--w-cs)"></span>CS</td><td class="pin">D5</td><td></td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d4" aria-label="RESET wired"></td><td class="pin"><span class="sw" style="background:var(--w-rst)"></span>RESET</td><td class="pin">D17</td><td>Labeled <span class="mono">TX2</span> on some boards.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d5" aria-label="DC wired"></td><td class="pin"><span class="sw" style="background:var(--w-dc)"></span>DC/RS</td><td class="pin">D16</td><td>Labeled <span class="mono">RX2</span> on some boards.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d6" aria-label="SDI wired"></td><td class="pin"><span class="sw" style="background:var(--w-mosi)"></span>SDI (MOSI)</td><td class="pin">D23</td><td>Shared with T_DIN and SD_MOSI.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d7" aria-label="SCK wired"></td><td class="pin"><span class="sw" style="background:var(--w-sck)"></span>SCK</td><td class="pin">D18</td><td>Shared with T_CLK and SD_SCK.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d8" aria-label="LED wired"></td><td class="pin"><span class="sw" style="background:var(--w-led)"></span>LED</td><td class="pin">D32</td><td>Backlight, so the brightness can be set.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="d9" aria-label="SDO left empty"></td><td class="pin">SDO (MISO)</td><td class="pin">nothing</td><td>Leave empty (see the note above).</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2>Touch <small>the T_ pins, same row</small></h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th></th><th>Display pin</th><th>Goes to</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="chk"><input type="checkbox" id="t1" aria-label="T_CLK wired"></td><td class="pin"><span class="sw" style="background:var(--w-sck)"></span>T_CLK</td><td class="pin">D18</td><td>Same row as SCK.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="t2" aria-label="T_CS wired"></td><td class="pin"><span class="sw" style="background:var(--w-tcs)"></span>T_CS</td><td class="pin">D21</td><td></td></tr>
+          <tr><td class="chk"><input type="checkbox" id="t3" aria-label="T_DIN wired"></td><td class="pin"><span class="sw" style="background:var(--w-mosi)"></span>T_DIN</td><td class="pin">D23</td><td>Same row as SDI.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="t4" aria-label="T_DO wired"></td><td class="pin"><span class="sw" style="background:var(--w-tdo)"></span>T_DO</td><td class="pin">D19</td><td>Shared with SD_MISO.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="t5" aria-label="T_IRQ left empty"></td><td class="pin">T_IRQ</td><td class="pin">nothing</td><td>Not needed.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="card">
+      <h2>SD card slot <small>4 pins at the other end of the board</small></h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th></th><th>SD pin</th><th>Goes to</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="chk"><input type="checkbox" id="s1" aria-label="SD_CS wired"></td><td class="pin"><span class="sw" style="background:var(--w-sdcs)"></span>SD_CS</td><td class="pin">D22</td><td></td></tr>
+          <tr><td class="chk"><input type="checkbox" id="s2" aria-label="SD_MOSI wired"></td><td class="pin"><span class="sw" style="background:var(--w-mosi)"></span>SD_MOSI</td><td class="pin">D23</td><td>Same row as SDI.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="s3" aria-label="SD_MISO wired"></td><td class="pin"><span class="sw" style="background:var(--w-tdo)"></span>SD_MISO</td><td class="pin">D19</td><td>Same row as T_DO.</td></tr>
+          <tr><td class="chk"><input type="checkbox" id="s4" aria-label="SD_SCK wired"></td><td class="pin"><span class="sw" style="background:var(--w-sck)"></span>SD_SCK</td><td class="pin">D18</td><td>Same row as SCK.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <p class="progress"><span id="count">0</span> of <span id="total">0</span> done <button class="reset" id="reset" type="button">Clear ticks</button></p>
+  </div>
+
+  <section>
+    <h2>First power-up: what you should see</h2>
+    <ol>
+      <li><strong>"Touch calibration"</strong>, then an arrow in each corner. Tap each one. This only happens the first time; hold a finger on the screen while it starts to do it again.</li>
+      <li><strong>"Connecting to Wi-Fi"</strong>, then the <strong>Weather</strong> page with tabs along the bottom: Weather, Driveway, Controls.</li>
+      <li>Until the Home Assistant token is added, the pages say <strong>"Home Assistant isn't set up yet"</strong>. That's expected. The dot in the top-right corner turns green once Home Assistant answers.</li>
+      <li>After 5 minutes without a touch, the <strong>picture frame</strong> starts. Tap anywhere to come back.</li>
+      <li>Blank white screen: check CS, DC and RESET. Taps in the wrong spot: recalibrate. "No SD card" in the frame: check the four SD wires and that the card is FAT32.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Uploading</h2>
+    <pre>cd ~/esp32_ha_remote
+~/.platformio/penv/bin/pio run -t upload -t monitor</pre>
+    <p class="muted">Or just tell Claude the board is plugged in. Photos: see "Photos for the picture frame" in the README.</p>
+  </section>
+</div>
+<script>
+  (function () {
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('td.chk input'));
+    var KEY = 'frame-remote-wiring-ticks';
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+    function update() {
+      var done = 0;
+      boxes.forEach(function (b) {
+        b.closest('tr').classList.toggle('done', b.checked);
+        if (b.checked) done++;
+      });
+      document.getElementById('count').textContent = done;
+      document.getElementById('total').textContent = boxes.length;
+    }
+    function save() {
+      var s = {};
+      boxes.forEach(function (b) { if (b.checked) s[b.id] = 1; });
+      try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    }
+    boxes.forEach(function (b) {
+      b.checked = !!saved[b.id];
+      b.addEventListener('change', function () { update(); save(); });
+    });
+    document.getElementById('reset').addEventListener('click', function () {
+      boxes.forEach(function (b) { b.checked = false; });
+      update(); save();
+    });
+    update();
+  })();
+</script>
