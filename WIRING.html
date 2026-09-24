@@ -234,7 +234,7 @@
       </g>
 
       <!-- Display main header -->
-      <text x="625" y="26" class="title" text-anchor="middle">4.0" TFT <tspan class="sub">main pins</tspan></text>
+      <text x="625" y="26" class="title" text-anchor="middle">4.0" TFT <tspan class="sub">one board</tspan></text>
       <rect class="box" x="520" y="36" width="210" height="404" rx="8"/>
       <g class="pinlbl">
         <text x="532" y="64">VCC</text>
@@ -255,7 +255,8 @@
 
       <!-- SD header -->
       <rect class="box" x="520" y="470" width="210" height="132" rx="8"/>
-      <text x="720" y="596" class="sub" text-anchor="end">SD slot pins</text>
+      <line x1="625" y1="440" x2="625" y2="470" stroke="var(--board-edge)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <text x="720" y="596" class="sub" text-anchor="end">same board, other end</text>
       <g class="pinlbl">
         <text x="532" y="498">SD_CS</text>
         <text x="532" y="526">SD_MOSI</text>
@@ -305,7 +306,7 @@
     </svg>
   </div>
 
-  <p class="note"><strong>Leave SDO (MISO) on the main row empty.</strong> On many of these 4" boards the screen's SDO pin doesn't let go of the line and garbles the touch and SD card readings. The screen doesn't need it. Only T_DO and SD_MISO go to D19. The SD slot's 4 pins are on the <strong>other end</strong> of the board from the main row.</p>
+  <p class="note"><strong>Leave SDO (MISO) on the main row empty.</strong> On many of these 4" boards the screen's SDO pin doesn't let go of the line and garbles the touch and SD card readings. The screen doesn't need it. Only T_DO and SD_MISO go to D19. The SD card slot is built into the back of the same board, but it has its <strong>own row of 4 pins</strong> (SD_CS, SD_MOSI, SD_MISO, SD_SCK), usually at the opposite end from the main row. Those 4 pins need their own wires; the slot isn't connected to the main row inside the board.</p>
 
   <div class="tables">
     <div class="card">
@@ -341,7 +342,7 @@
     </div>
 
     <div class="card">
-      <h2>SD card slot <small>4 pins at the other end of the board</small></h2>
+      <h2>SD card slot <small>on the back of the same board, its own 4 pins</small></h2>
       <div class="tablewrap"><table>
         <thead><tr><th></th><th>SD pin</th><th>Goes to</th><th>Notes</th></tr></thead>
         <tbody>

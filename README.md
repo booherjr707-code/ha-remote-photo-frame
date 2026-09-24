@@ -9,7 +9,7 @@ remote back, and the driveway alarm wakes it up on the Driveway page.
 ## Parts
 
 - ESP32-WROOM-32 dev board (the same kind as the weather display)
-- Hosyond 4.0" 480x320 SPI touch display, ST7796S + XPT2046 touch, SD slot on the back
+- Hosyond 4.0" 480x320 SPI touch display, ST7796S + XPT2046 touch, with the SD slot built into the back (its 4 SD pins are a separate little row on the same board)
   ([Amazon B0CKRJ81B5](https://www.amazon.com/dp/B0CKRJ81B5))
 - microSD card, 32 GB or smaller (FAT32, the way they come from the store)
 
